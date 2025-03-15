@@ -22,6 +22,7 @@ public class WebshopSteps {
     private ShoppingCartPage shoppingCartPage;
     private WaitUtils waitUtils;
     
+    
     @Before
     public void setup() {
         driver = WebDriverManager.getDriver();

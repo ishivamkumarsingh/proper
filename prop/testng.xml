@@ -1,1 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<suite parallel="false" name="Suite">
+  <test name="Webshop Test Suite">
+    <classes>
+      <class name="src/test/java/runners.TestRunner"/>
+    </classes>
+  </test> <!-- Test -->
+</suite> <!-- Suite -->
+
+

@@ -1,0 +1,19 @@
+// Project Structure:
+// src/main/java
+//   - pages
+//     - HomePage.java
+//     - ElectronicsPage.java
+//     - ProductDetailsPage.java
+//     - ShoppingCartPage.java
+//   - utils
+//     - WebDriverManager.java
+//     - WaitUtils.java
+// src/test/java
+//   - stepdefinitions
+//     - WebshopSteps.java
+//   - runners
+//     - TestRunner.java
+// src/test/resources
+//   - features
+//     - webshop.feature
+
