@@ -1,0 +1,27 @@
+demo-web-shop-automation/
+├── pom.xml
+├── src/
+    ├── main/
+    │   └── java/
+    │       └── com/
+    │           └── demowebshop/
+    │               └── pages/
+    │                   ├── BasePage.java
+    │                   ├── HomePage.java
+    │                   ├── ProductDetailsPage.java
+    │                   ├── ProductListPage.java
+    │                   └── ShoppingCartPage.java
+    └── test/
+        ├── java/
+        │   └── com/
+        │       └── demowebshop/
+        │           ├── runner/
+        │           │   └── TestRunner.java
+        │           ├── stepdefinitions/
+        │           │   ├── Hooks.java
+        │           │   └── ShoppingSteps.java
+        │           └── utils/
+        │               └── WebDriverFactory.java
+        └── resources/
+            └── features/
+                └── shopping.feature
