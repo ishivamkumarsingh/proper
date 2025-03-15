@@ -1,0 +1,570 @@
+// Project Structure
+// src/main/java/com/demowebshop/pages/BasePage.java
+package com.demowebshop.pages;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import java.time.Duration;
+
+public class BasePage {
+    protected WebDriver driver;
+    protected WebDriverWait wait;
+    
+    public BasePage(WebDriver driver) {
+        this.driver = driver;
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    }
+    
+    protected WebElement waitForElementVisible(By locator) {
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    }
+    
+    protected WebElement waitForElementClickable(By locator) {
+        return wait.until(ExpectedConditions.elementToBeClickable(locator));
+    }
+    
+    protected boolean isElementDisplayed(By locator) {
+        try {
+            return waitForElementVisible(locator).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    protected void click(By locator) {
+        waitForElementClickable(locator).click();
+    }
+    
+    protected String getText(By locator) {
+        return waitForElementVisible(locator).getText();
+    }
+    
+    protected String getTitle() {
+        return driver.getTitle();
+    }
+}
+
+// src/main/java/com/demowebshop/pages/HomePage.java
+package com.demowebshop.pages;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.Actions;
+
+public class HomePage extends BasePage {
+    private final By electronicsMenu = By.xpath("//ul[@class='top-menu']//a[contains(text(),'Electronics')]");
+    private final By cellPhonesSubMenu = By.xpath("//ul[@class='top-menu']//a[contains(text(),'Cell phones')]");
+    private final By shoppingCartLink = By.xpath("//li[@id='topcartlink']//a[contains(@class,'ico-cart')]");
+    
+    public HomePage(WebDriver driver) {
+        super(driver);
+    }
+    
+    public void navigateToHomePage(String url) {
+        driver.get(url);
+    }
+    
+    public boolean verifyTitle(String expectedTitle) {
+        return getTitle().equals(expectedTitle);
+    }
+    
+    public void navigateToCellPhones() {
+        Actions actions = new Actions(driver);
+        WebElement electronicsElement = waitForElementVisible(electronicsMenu);
+        actions.moveToElement(electronicsElement).perform();
+        click(cellPhonesSubMenu);
+    }
+    
+    public String getShoppingCartText() {
+        return getText(shoppingCartLink);
+    }
+    
+    public boolean isShoppingCartEmpty() {
+        return getShoppingCartText().contains("(0)");
+    }
+    
+    public boolean verifyCartItemCount(int expectedCount) {
+        return getShoppingCartText().contains("(" + expectedCount + ")");
+    }
+    
+    public ShoppingCartPage goToShoppingCart() {
+        click(shoppingCartLink);
+        return new ShoppingCartPage(driver);
+    }
+}
+
+// src/main/java/com/demowebshop/pages/ProductListPage.java
+package com.demowebshop.pages;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+public class ProductListPage extends BasePage {
+    private final By pageTitle = By.xpath("//div[@class='page-title']/h1");
+    
+    public ProductListPage(WebDriver driver) {
+        super(driver);
+    }
+    
+    public boolean verifyPageTitle(String expectedTitle) {
+        return getText(pageTitle).trim().equals(expectedTitle);
+    }
+    
+    public ProductDetailsPage selectProduct(String productName) {
+        By productLink = By.xpath("//h2[@class='product-title']//a[contains(text(),'" + productName + "')]");
+        click(productLink);
+        return new ProductDetailsPage(driver);
+    }
+}
+
+// src/main/java/com/demowebshop/pages/ProductDetailsPage.java
+package com.demowebshop.pages;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+public class ProductDetailsPage extends BasePage {
+    private final By productName = By.xpath("//div[@class='product-name']/h1");
+    private final By productPrice = By.xpath("//div[@class='product-price']");
+    private final By addToCartButton = By.xpath("//input[contains(@id,'add-to-cart-button')]");
+    private final By notificationBar = By.xpath("//div[@id='bar-notification']");
+    private final By closeNotificationButton = By.xpath("//div[@id='bar-notification']//span[@class='close']");
+    
+    public ProductDetailsPage(WebDriver driver) {
+        super(driver);
+    }
+    
+    public String getProductName() {
+        return getText(productName);
+    }
+    
+    public String getProductPrice() {
+        return getText(productPrice);
+    }
+    
+    public boolean verifyProductName(String expectedName) {
+        return getProductName().equals(expectedName);
+    }
+    
+    public boolean verifyProductPrice(String expectedPrice) {
+        return getProductPrice().equals(expectedPrice);
+    }
+    
+    public void addToCart() {
+        click(addToCartButton);
+        waitForElementVisible(notificationBar);
+        if (isElementDisplayed(closeNotificationButton)) {
+            click(closeNotificationButton);
+        }
+    }
+}
+
+// src/main/java/com/demowebshop/pages/ShoppingCartPage.java
+package com.demowebshop.pages;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+public class ShoppingCartPage extends BasePage {
+    private final By pageTitle = By.xpath("//div[@class='page-title']/h1");
+    private final By productName = By.xpath("//table[@class='cart']//a[@class='product-name']");
+    private final By unitPrice = By.xpath("//table[@class='cart']//span[@class='product-unit-price']");
+    private final By quantity = By.xpath("//table[@class='cart']//input[contains(@name,'itemquantity')]");
+    private final By termsOfServiceCheckbox = By.id("termsofservice");
+    private final By checkoutButton = By.id("checkout");
+    private final By warningMessage = By.xpath("//div[@id='terms-of-service-warning-box']");
+    private final By closeWarningButton = By.xpath("//div[@id='terms-of-service-warning-box']//button");
+    
+    public ShoppingCartPage(WebDriver driver) {
+        super(driver);
+    }
+    
+    public boolean verifyPageTitle(String expectedTitle) {
+        return getText(pageTitle).equals(expectedTitle);
+    }
+    
+    public String getProductName() {
+        return getText(productName);
+    }
+    
+    public String getUnitPrice() {
+        return getText(unitPrice);
+    }
+    
+    public String getQuantity() {
+        return waitForElementVisible(quantity).getAttribute("value");
+    }
+    
+    public boolean verifyProductDetails(String expectedName, String expectedPrice, String expectedQuantity) {
+        return getProductName().equals(expectedName) && 
+               getUnitPrice().equals(expectedPrice) && 
+               getQuantity().equals(expectedQuantity);
+    }
+    
+    public void clickCheckoutWithoutTerms() {
+        click(checkoutButton);
+        waitForElementVisible(warningMessage);
+    }
+    
+    public boolean verifyWarningMessageDisplayed() {
+        return isElementDisplayed(warningMessage);
+    }
+    
+    public void closeWarningMessage() {
+        if (isElementDisplayed(closeWarningButton)) {
+            click(closeWarningButton);
+        }
+    }
+    
+    public void acceptTermsOfService() {
+        click(termsOfServiceCheckbox);
+    }
+    
+    public void proceedToCheckout() {
+        click(checkoutButton);
+    }
+}
+
+// src/test/java/com/demowebshop/utils/WebDriverFactory.java
+package com.demowebshop.utils;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+public class WebDriverFactory {
+    public static WebDriver createDriver(String browser) {
+        WebDriver driver;
+        
+        switch (browser.toLowerCase()) {
+            case "firefox":
+                WebDriverManager.firefoxdriver().setup();
+                driver = new FirefoxDriver();
+                break;
+            case "edge":
+                WebDriverManager.edgedriver().setup();
+                driver = new EdgeDriver();
+                break;
+            default:
+                WebDriverManager.chromedriver().setup();
+                driver = new ChromeDriver();
+                break;
+        }
+        
+        driver.manage().window().maximize();
+        return driver;
+    }
+}
+
+// src/test/java/com/demowebshop/stepdefintions/Hooks.java
+package com.demowebshop.stepdefinitions;
+
+import com.demowebshop.utils.WebDriverFactory;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+
+public class Hooks {
+    public static WebDriver driver;
+    
+    @Before
+    public void setup() {
+        driver = WebDriverFactory.createDriver("chrome");
+    }
+    
+    @After
+    public void tearDown(Scenario scenario) {
+        if (scenario.isFailed()) {
+            final byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+            scenario.attach(screenshot, "image/png", scenario.getName());
+        }
+        
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+}
+
+// src/test/java/com/demowebshop/stepdefinitions/ShoppingSteps.java
+package com.demowebshop.stepdefinitions;
+
+import com.demowebshop.pages.HomePage;
+import com.demowebshop.pages.ProductDetailsPage;
+import com.demowebshop.pages.ProductListPage;
+import com.demowebshop.pages.ShoppingCartPage;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+import org.junit.Assert;
+
+public class ShoppingSteps {
+    private WebDriver driver = Hooks.driver;
+    private HomePage homePage;
+    private ProductListPage productListPage;
+    private ProductDetailsPage productDetailsPage;
+    private ShoppingCartPage shoppingCartPage;
+    private String expectedProductPrice;
+    
+    @Given("I open the demo web shop application {string}")
+    public void i_open_the_demo_web_shop_application(String url) {
+        homePage = new HomePage(driver);
+        homePage.navigateToHomePage(url);
+    }
+    
+    @Then("I verify the title is {string}")
+    public void i_verify_the_title_is(String expectedTitle) {
+        Assert.assertTrue("Title does not match", homePage.verifyTitle(expectedTitle));
+    }
+    
+    @When("I navigate to Electronics and then Cell phones")
+    public void i_navigate_to_electronics_and_then_cell_phones() {
+        homePage.navigateToCellPhones();
+        productListPage = new ProductListPage(driver);
+    }
+    
+    @Then("I should see the Cell phones page")
+    public void i_should_see_the_cell_phones_page() {
+        Assert.assertTrue("Page title does not match", 
+            productListPage.verifyPageTitle("Cell phones"));
+    }
+    
+    @When("I select the product {string}")
+    public void i_select_the_product(String productName) {
+        productDetailsPage = productListPage.selectProduct(productName);
+    }
+    
+    @Then("I verify the product name is {string}")
+    public void i_verify_the_product_name_is(String expectedName) {
+        Assert.assertTrue("Product name does not match", 
+            productDetailsPage.verifyProductName(expectedName));
+    }
+    
+    @Then("I verify the product price")
+    public void i_verify_the_product_price() {
+        expectedProductPrice = productDetailsPage.getProductPrice();
+        Assert.assertFalse("Product price is empty", expectedProductPrice.isEmpty());
+    }
+    
+    @Then("I verify the shopping cart is empty")
+    public void i_verify_the_shopping_cart_is_empty() {
+        Assert.assertTrue("Shopping cart is not empty", homePage.isShoppingCartEmpty());
+    }
+    
+    @When("I add the product to cart")
+    public void i_add_the_product_to_cart() {
+        productDetailsPage.addToCart();
+    }
+    
+    @Then("I verify the shopping cart has {int} item")
+    public void i_verify_the_shopping_cart_has_item(Integer expectedCount) {
+        Assert.assertTrue("Shopping cart item count is incorrect", 
+            homePage.verifyCartItemCount(expectedCount));
+    }
+    
+    @When("I go to shopping cart")
+    public void i_go_to_shopping_cart() {
+        shoppingCartPage = homePage.goToShoppingCart();
+    }
+    
+    @Then("I verify the cart page title is {string}")
+    public void i_verify_the_cart_page_title_is(String expectedTitle) {
+        Assert.assertTrue("Cart page title does not match", 
+            shoppingCartPage.verifyPageTitle(expectedTitle));
+    }
+    
+    @Then("I verify the product details in cart for {string} with quantity {string}")
+    public void i_verify_the_product_details_in_cart(String productName, String quantity) {
+        Assert.assertTrue("Product details in cart do not match",
+            shoppingCartPage.verifyProductDetails(productName, expectedProductPrice, quantity));
+    }
+    
+    @When("I click on Checkout without accepting terms")
+    public void i_click_on_checkout_without_accepting_terms() {
+        shoppingCartPage.clickCheckoutWithoutTerms();
+    }
+    
+    @Then("I verify the warning message is displayed")
+    public void i_verify_the_warning_message_is_displayed() {
+        Assert.assertTrue("Warning message is not displayed", 
+            shoppingCartPage.verifyWarningMessageDisplayed());
+    }
+    
+    @When("I close the warning message")
+    public void i_close_the_warning_message() {
+        shoppingCartPage.closeWarningMessage();
+    }
+    
+    @When("I accept the terms of service")
+    public void i_accept_the_terms_of_service() {
+        shoppingCartPage.acceptTermsOfService();
+    }
+    
+    @When("I proceed to checkout")
+    public void i_proceed_to_checkout() {
+        shoppingCartPage.proceedToCheckout();
+    }
+}
+
+// src/test/java/com/demowebshop/runner/TestRunner.java
+package com.demowebshop.runner;
+
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
+import org.junit.runner.RunWith;
+
+@RunWith(Cucumber.class)
+@CucumberOptions(
+    features = "src/test/resources/features",
+    glue = {"com.demowebshop.stepdefinitions"},
+    plugin = {
+        "pretty",
+        "html:target/cucumber-reports/cucumber-pretty.html",
+        "json:target/cucumber-reports/CucumberTestReport.json",
+        "rerun:target/cucumber-reports/rerun.txt"
+    },
+    monochrome = true,
+    dryRun = false
+)
+public class TestRunner {
+}
+
+// src/test/resources/features/shopping.feature
+Feature: Demo Web Shop Purchase Flow
+
+  Scenario: Verify purchase flow in demo web shop
+    Given I open the demo web shop application "https://demowebshop.tricentis.com/"
+    Then I verify the title is "Demo Web Shop"
+    
+    When I navigate to Electronics and then Cell phones
+    Then I should see the Cell phones page
+    
+    When I select the product "Smartphone"
+    Then I verify the product name is "Smartphone"
+    And I verify the product price
+    And I verify the shopping cart is empty
+    
+    When I add the product to cart
+    Then I verify the shopping cart has 1 item
+    
+    When I go to shopping cart
+    Then I verify the cart page title is "Shopping Cart"
+    And I verify the product details in cart for "Smartphone" with quantity "1"
+    
+    When I click on Checkout without accepting terms
+    Then I verify the warning message is displayed
+    
+    When I close the warning message
+    And I accept the terms of service
+    And I proceed to checkout
+
+// pom.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.demowebshop</groupId>
+    <artifactId>demo-web-shop-automation</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <selenium.version>4.15.0</selenium.version>
+        <cucumber.version>7.14.0</cucumber.version>
+        <junit.version>4.13.2</junit.version>
+        <webdrivermanager.version>5.5.3</webdrivermanager.version>
+    </properties>
+
+    <dependencies>
+        <!-- Selenium -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium.version}</version>
+        </dependency>
+        
+        <!-- WebDriverManager -->
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>${webdrivermanager.version}</version>
+        </dependency>
+        
+        <!-- Cucumber -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>${cucumber.version}</version>
+        </dependency>
+        
+        <!-- JUnit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.1.2</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Runner.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>net.masterthought</groupId>
+                <artifactId>maven-cucumber-reporting</artifactId>
+                <version>5.7.5</version>
+                <executions>
+                    <execution>
+                        <id>execution</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <projectName>Demo Web Shop Automation</projectName>
+                            <outputDirectory>${project.build.directory}/cucumber-reports</outputDirectory>
+                            <inputDirectory>${project.build.directory}/cucumber-reports</inputDirectory>
+                            <jsonFiles>
+                                <param>**/*.json</param>
+                            </jsonFiles>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
