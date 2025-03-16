@@ -4,8 +4,10 @@ import io.cucumber.testng.CucumberOptions;
 @CucumberOptions(
     features = {
         "src/test/resources/features/SignIn.feature",
-       // "src/test/resources/features/CourseSearch.feature",
-        "src/test/resources/features/HeaderVerification.feature"
+        "src/test/resources/features/CourseSearch.feature",
+        "src/test/resources/features/HeaderVerification.feature",
+        "src/test/resources/features/PracticePageFormElements.feature",
+        "src/test/resources/features/AdvancedInteractions.feature"
     },
     glue = {"stepdefinition", "utility"}, 
     plugin = {
@@ -20,6 +22,5 @@ import io.cucumber.testng.CucumberOptions;
     monochrome = true
 )
 public class testrunner extends AbstractTestNGCucumberTests {
-    // We do not need to add anything else here unless you want 
-    // to customize data providers or hooks for parallel execution.
+    // We do not nee
 }
