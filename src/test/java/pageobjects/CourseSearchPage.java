@@ -13,22 +13,21 @@ public class CourseSearchPage {
 
     private WebDriver driver;
 
-    // Locators with exact XPaths provided
-    private By myCoursesLink = By.xpath("//*[@id=\"navbar-inverse-collapse\"]/ul/li[2]/a");
-    private By searchBox = By.xpath("//*[@id=\"search\"]");
+    // Updated locators
+    private By allCoursesLink = By.xpath("//a[contains(text(),'ALL COURSES')]");
+    private By searchBox = By.id("search");
     private By searchButton = By.xpath("//*[@id=\"search\"]/div/button/i");
-    
-    // You'll need to update this with the actual XPath for course listings
     private By searchResults = By.xpath("//div[contains(@class,'course-listing')]//h4[contains(@class,'course-listing-title')]");
+    private By courseTitle = By.cssSelector("h1.dynamic-heading");
 
     public CourseSearchPage(WebDriver driver) {
         this.driver = driver;
     }
 
-    public void clickMyCoursesLink() {
+    public void clickAllCoursesLink() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.elementToBeClickable(myCoursesLink));
-        driver.findElement(myCoursesLink).click();
+        wait.until(ExpectedConditions.elementToBeClickable(allCoursesLink));
+        driver.findElement(allCoursesLink).click();
     }
 
     public void searchForCourse(String courseName) {
@@ -62,5 +61,11 @@ public class CourseSearchPage {
         } catch (TimeoutException e) {
             return false;
         }
+    }
+    
+    public void clearSearchBox() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement searchInput = wait.until(ExpectedConditions.elementToBeClickable(searchBox));
+        searchInput.clear();
     }
 }

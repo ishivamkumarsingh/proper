@@ -6,7 +6,7 @@ import io.cucumber.testng.CucumberOptions;
         "src/test/resources/features/SignIn.feature",
         "src/test/resources/features/CourseSearch.feature"
     },
-    glue = {"stepdefinition", "utility", "pageobjects"}, 
+    glue = {"stepdefinition", "utility"}, // Removed pageobjects from glue path
     plugin = {
         "pretty",
         "html:target/cucumber-html-report.html",

@@ -12,20 +12,20 @@ public class CourseSearchSteps extends BaseClass {
 
     CourseSearchPage courseSearchPage;
 
-    @Given("I open the application home page")
-    public void i_open_the_application_home_page() {
+    @Given("I open the Let's Kode It website")
+    public void i_open_the_lets_kode_it_website() {
         Log4jConfig.info("Launching browser and navigating to Let's Kode It...");
         driver = getDriver(); // from BaseClass
         driver.get("https://www.letskodeit.com/"); // Direct URL
         ScreenshotUtil.captureScreenshotReturnPath(driver, "HomePage");
     }
 
-    @When("I click on My Courses link")
-    public void i_click_on_my_courses_link() {
-        Log4jConfig.info("Clicking on My Courses link...");
+    @When("I click on ALL COURSES link")
+    public void i_click_on_all_courses_link() {
+        Log4jConfig.info("Clicking on ALL COURSES link...");
         courseSearchPage = new CourseSearchPage(driver);
-        courseSearchPage.clickMyCoursesLink();
-        ScreenshotUtil.captureScreenshotReturnPath(driver, "MyCoursesPage");
+        courseSearchPage.clickAllCoursesLink();
+        ScreenshotUtil.captureScreenshotReturnPath(driver, "AllCoursesPage");
     }
 
     @When("I search for {string} in the search box")
@@ -42,5 +42,12 @@ public class CourseSearchSteps extends BaseClass {
         Assert.assertTrue(courseFound, "Course '" + courseName + "' was not found in search results");
         Log4jConfig.info("Course '" + courseName + "' was found successfully");
         ScreenshotUtil.captureScreenshotReturnPath(driver, "SearchResults_" + courseName.replaceAll("\\s+", "_"));
+    }
+    
+    @When("I clear the search box")
+    public void i_clear_the_search_box() {
+        Log4jConfig.info("Clearing the search box...");
+        courseSearchPage.clearSearchBox();
+        ScreenshotUtil.captureScreenshotReturnPath(driver, "SearchBoxCleared");
     }
 }
