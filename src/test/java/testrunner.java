@@ -3,11 +3,11 @@ import io.cucumber.testng.CucumberOptions;
 
 @CucumberOptions(
     features = {
-        "src/test/resources/features/SignIn.feature",
-        "src/test/resources/features/CourseSearch.feature",
-        "src/test/resources/features/HeaderVerification.feature",
-        "src/test/resources/features/PracticePageFormElements.feature",
-        "src/test/resources/features/AdvancedInteractions.feature"
+        "src/test/resources/features/Signin.feature",
+        "src/test/resources/features/coursesearch.feature",
+        "src/test/resources/features/headerverification.feature",
+        "src/test/resources/features/practicepageelements.feature",
+        "src/test/resources/features/advanceinteraction.feature"
     },
     glue = {"stepdefinition", "utility"}, 
     plugin = {
@@ -22,5 +22,5 @@ import io.cucumber.testng.CucumberOptions;
     monochrome = true
 )
 public class testrunner extends AbstractTestNGCucumberTests {
-    // We do not nee
+    // No additional implementation needed as we're using the parent class methods
 }
