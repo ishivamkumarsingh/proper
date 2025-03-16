@@ -12,16 +12,16 @@ public class CourseSearchSteps extends BaseClass {
 
     CourseSearchPage courseSearchPage;
 
-    @Given("I open the Let's Kode It website")
-    public void i_open_the_lets_kode_it_website() {
+    @Given("I navigate to application homepage")
+    public void i_navigate_to_application_homepage() {
         Log4jConfig.info("Launching browser and navigating to Let's Kode It...");
         driver = getDriver(); // from BaseClass
         driver.get("https://www.letskodeit.com/"); // Direct URL
         ScreenshotUtil.captureScreenshotReturnPath(driver, "HomePage");
     }
 
-    @When("I click on ALL COURSES link")
-    public void i_click_on_all_courses_link() {
+    @When("I click on My Courses link")
+    public void i_click_on_my_courses_link() {
         Log4jConfig.info("Clicking on ALL COURSES link...");
         courseSearchPage = new CourseSearchPage(driver);
         courseSearchPage.clickAllCoursesLink();

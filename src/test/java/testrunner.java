@@ -4,9 +4,10 @@ import io.cucumber.testng.CucumberOptions;
 @CucumberOptions(
     features = {
         "src/test/resources/features/SignIn.feature",
-        "src/test/resources/features/CourseSearch.feature"
+       // "src/test/resources/features/CourseSearch.feature",
+        "src/test/resources/features/HeaderVerification.feature"
     },
-    glue = {"stepdefinition", "utility"}, // Removed pageobjects from glue path
+    glue = {"stepdefinition", "utility"}, 
     plugin = {
         "pretty",
         "html:target/cucumber-html-report.html",
