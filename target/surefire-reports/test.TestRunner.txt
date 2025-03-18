@@ -1,0 +1,16 @@
+-------------------------------------------------------------------------------
+Test set: test.TestRunner
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 14.635 s <<< FAILURE! - in test.TestRunner
+runScenario(test.TestRunner)  Time elapsed: 10.911 s  <<< FAILURE!
+org.openqa.selenium.ElementNotInteractableException: 
+element not interactable
+  (Session info: chrome=134.0.6998.89)
+Build info: version: '4.29.0', revision: '5fc1ec94cb'
+System info: os.name: 'Windows 10', os.arch: 'amd64', os.version: '10.0', java.version: '21.0.6'
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Command: [272cdbf471bbf226735babebbc4aaf62, sendKeysToElement {id=f.699F27DFEDFA4F3575F2A861D064C37C.d.9EE3B97EFAEFB9C87A7BB30E3EA4CD22.e.40, value=[Ljava.lang.CharSequence;@188b6035}]
+Capabilities {acceptInsecureCerts: false, browserName: chrome, browserVersion: 134.0.6998.89, chrome: {chromedriverVersion: 134.0.6998.88 (7e3d5c978c6d..., userDataDir: C:\Windows\SystemTemp\scope...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:62415}, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:62415/devtoo..., se:cdpVersion: 134.0.6998.89, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+Element: [[ChromeDriver: chrome on windows (272cdbf471bbf226735babebbc4aaf62)] -> id: loantermslider]
+Session ID: 272cdbf471bbf226735babebbc4aaf62
+
